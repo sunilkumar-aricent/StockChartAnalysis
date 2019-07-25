@@ -23,13 +23,15 @@ class Company extends Component {
             this.getMatchesFromNse(keyword, (searchResult) => {
                 this.setState({ searchResult });
             });
+        } else {
+            this.setState({ searchResult: '' });
         }
     }
 
     selectStock(e) {
         // need refactoring..
         e.preventDefault();
-        this.setState({ searchResult: '' });
+        this.setState({ searchResult: '', keyword: '' });
         const stockDetails = {};
         let target = e.target;
         if(target.nodeName !== 'A') {
@@ -82,7 +84,7 @@ class Company extends Component {
             );
         });
         return (
-            <table>
+            <table className="table table-stripped">
                 <tr>
                     <th>Date</th>
                     <th>Price</th>
@@ -96,13 +98,13 @@ class Company extends Component {
     render() {
         return (
             <div id="company">
-                <h1>Selected stock is: {this.state.selectedStock || 'NA'}</h1>
                 <div className="search-container">
                     <div className="search-container-inner">
                         <input type="text" onChange={(e) => this.getKeywordMatches(e)} value={this.state.keyword} />
-                        <div onClick={(e) => this.selectStock(e)} dangerouslySetInnerHTML={{ __html: this.state.searchResult}}></div>
+                        <div class="search-result" onClick={(e) => this.selectStock(e)} dangerouslySetInnerHTML={{ __html: this.state.searchResult}}></div>
                     </div>
                 </div>
+                <h1>{!this.state.selectedStock ? 'No stock selected' : `Selected stock is: ${this.state.selectedStock}`}</h1>
                 {this.renderHistoricalData()}
             </div>
         )

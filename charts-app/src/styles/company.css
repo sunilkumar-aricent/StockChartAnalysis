@@ -2,7 +2,15 @@
     position: relative;
 }
 .search-container-inner{
-    position: absolute;
+    /* position: absolute; */
     background: #eee;
     width: 100%;
+}
+
+.search-result {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    background-color: #ddd;
+    transform: translate(50%)
 }
