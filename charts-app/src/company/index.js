@@ -1,9 +1,8 @@
 import React, { Component, Fragment } from 'react';
+import {connect} from 'react-redux';
 import axios from 'axios';
 import '../styles/company.css';
-import Loader from '../components/loader.js';
-
-const historicalDataApi = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&outputsize=full&apikey=LYK5FRW7A27I9REB';
+import { getHistoricalData } from './action';
 
 class Company extends Component {
     state={ keyword: '', searchResult: '', selectedStock: '', historicalData: [] };
@@ -15,15 +14,6 @@ class Company extends Component {
             // const data = getProcessedData(res.data);
             callback(res.data);
         });
-    }
-
-    getHistoricalData(stock) {
-        this.setState({ showLoader: true })
-        // &symbol=NSE:TCS
-        axios.get(`${historicalDataApi}&symbol=NSE:${stock}`).then((res) => {
-            console.log(res.data);
-            this.setState({ historicalData: res.data, showLoader: false });
-        })
     }
 
     getKeywordMatches(e) {
@@ -57,7 +47,9 @@ class Company extends Component {
             stockDetails[splits[0]] = splits[1];
         });
         this.setState({ selectedStock: stockDetails.symbol });
-        this.getHistoricalData(stockDetails.symbol);
+        this.props.getHistoricalData(stockDetails.symbol, (data) => {
+            this.setState({ historicalData: data });
+        });
     }
 
     renderHistoricalData() {
@@ -112,10 +104,21 @@ class Company extends Component {
                     </div>
                 </div>
                 {this.renderHistoricalData()}
-                {this.state.showLoader && <Loader />} 
             </div>
         )
     }
 }
 
-export default Company;
+// export default Company;
+
+const mapStateToProps = (state) => ({
+    company: state.company 
+})
+
+const mapDispatchToProps = {
+    getHistoricalData
+};
+
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(Company);
+
+export default connectedComponent;
