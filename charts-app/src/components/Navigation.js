@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 function Navigation() {
     return (
@@ -12,13 +13,16 @@ function Navigation() {
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav">
                         <li className="nav-item">
-                            <button class="btn nav-link">Company</button>
+                            {/* <button class="btn nav-link">Company</button> */}
+                            <Link className="nav-link" to='/'>Company</Link>
                         </li>
                         <li className="nav-item">
-                            <button class="btn nav-link">Watchlist</button>
+                            {/* <button class="btn nav-link">Watchlist</button> */}
+                            <Link className="nav-link" to='/watchlist'>Watchlist</Link>
                         </li>
                         <li className="nav-item">
-                            <button class="btn nav-link">Comparision</button>
+                            {/* <button class="btn nav-link">Comparision</button> */}
+                            <Link className="nav-link" to='/comparision'>Comparision</Link>
                         </li>
                     </ul>
                 </div>
