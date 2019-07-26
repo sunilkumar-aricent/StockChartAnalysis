@@ -1,6 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
 import { getWatchlistData } from './actions';
+
+const RemoveStockBtn = styled.button`
+    font-size: 10px,
+    color: #fa3,
+    cursor: pointer
+`;
+
+const updateLocalStorage = (item, data) => {
+    localStorage.setItem(item, JSON.stringify(data));
+}
 
 class Watchlist extends React.Component {
     state = {
@@ -25,6 +36,15 @@ class Watchlist extends React.Component {
         });
     }
 
+    removeStock(index) {
+        const watchlist = [...this.state.watchlist];
+        const watchlist2 = [...this.state.watchlist2];
+        watchlist.splice(index, 1);
+        watchlist2.splice(index, 1);
+        updateLocalStorage('watchlist', watchlist);
+        this.setState({ watchlist, watchlist2 })
+    }
+
     renderWatchlist() {
         if( !this.state.watchlist2.length ) {
             return null;
@@ -39,6 +59,7 @@ class Watchlist extends React.Component {
                     <td>{company}</td>
                     <td>{price}</td>
                     <td>{volume}</td>
+                    <td><RemoveStockBtn className="fa fa-times" onClick={() => this.removeStock(index)}></RemoveStockBtn></td>
                 </tr>
             );
         });
@@ -48,6 +69,7 @@ class Watchlist extends React.Component {
                     <th>Company</th>
                     <th>Price</th>
                     <th>Volume</th>
+                    <th>Remove</th>
                 </tr>
                 {html}
             </table>

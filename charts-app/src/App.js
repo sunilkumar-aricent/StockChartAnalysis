@@ -7,6 +7,7 @@ import Watchlist from './watchlist';
 import Comparision from './comparision';
 import Loader from './common/components/loader';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'font-awesome/css/font-awesome.min.css';
 
 import { BrowserRouter, Route } from 'react-router-dom';
 
