@@ -100,17 +100,8 @@ class Company extends Component {
     }
 
     addToWatchlist = () => {
-        debugger;
         const selectedStock = this.state.selectedStock;
         const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
-        // if (watchlist.indexOf(selectedStock)) === -1) {
-        //     // add to watchlist
-        //     watchlist.push(selectedStock);
-        //     localStorage.setItem('watchlist', watchlist);
-        // } else {
-        //     // stock already exist
-        //     alert('stock already exist in the watchlist');
-        // }
         if (watchlist.indexOf(selectedStock) === -1) {
             watchlist.push(selectedStock);
             localStorage.setItem('watchlist', JSON.stringify(watchlist));
