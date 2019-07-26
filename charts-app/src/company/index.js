@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import {connect} from 'react-redux';
 import axios from 'axios';
-import '../styles/company.css';
+import '../common/styles/company.css';
 import { getHistoricalData } from './action';
 
 class Company extends Component {

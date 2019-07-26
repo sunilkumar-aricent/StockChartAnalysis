@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import './App.css';
-import Navigation from './components/Navigation';
+import Navigation from './common/components/Navigation';
 import Company from './company';
 import Watchlist from './watchlist';
 import Comparision from './comparision';
-import Loader from './components/loader';
+import Loader from './common/components/loader';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { BrowserRouter, Route } from 'react-router-dom';

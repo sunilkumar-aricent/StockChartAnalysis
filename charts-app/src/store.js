@@ -4,10 +4,10 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 
-import companyReducer from './company-reducer';
-import watchlistReducer from './watchlist-reducer';
-import comparisionReducer from './comparision-reducer';
-import commonReducer from './common-reducer';
+import companyReducer from './reducers/company-reducer';
+import watchlistReducer from './reducers/watchlist-reducer';
+import comparisionReducer from './reducers/comparision-reducer';
+import commonReducer from './reducers/common-reducer';
 // // import createSagaMiddlware from 'redux-saga';
 
 const reducers = combineReducers({
