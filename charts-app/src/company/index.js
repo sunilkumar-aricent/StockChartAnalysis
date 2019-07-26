@@ -95,6 +95,27 @@ class Company extends Component {
         );
     }
 
+    addToWatchlist = () => {
+        debugger;
+        const selectedStock = this.state.selectedStock;
+        const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+        // if (watchlist.indexOf(selectedStock)) === -1) {
+        //     // add to watchlist
+        //     watchlist.push(selectedStock);
+        //     localStorage.setItem('watchlist', watchlist);
+        // } else {
+        //     // stock already exist
+        //     alert('stock already exist in the watchlist');
+        // }
+        if (watchlist.indexOf(selectedStock) === -1) {
+            watchlist.push(selectedStock);
+            localStorage.setItem('watchlist', JSON.stringify(watchlist));
+        } else {
+            // stock already exist
+            alert('stock already exist in the watchlist');
+        }
+    }
+
     render() {
         return (
             <div id="company">
@@ -105,6 +126,7 @@ class Company extends Component {
                     </div>
                 </div>
                 <h1>{!this.state.selectedStock ? 'No stock selected' : `Selected stock is: ${this.state.selectedStock}`}</h1>
+                {this.state.selectedStock && <button className="btn btn-primary" onClick={this.addToWatchlist}>Add to watchlist</button>}
                 {this.renderHistoricalData()}
             </div>
         )
