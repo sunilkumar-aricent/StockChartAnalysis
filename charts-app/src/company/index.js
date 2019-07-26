@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import axios from 'axios';
 import '../common/styles/company.css';
 import { getHistoricalData } from './action';
+import ChartRender from '../components/chartRender';
 
 class Company extends Component {
     state={ keyword: '', searchResult: '', selectedStock: '', historicalData: [] };
@@ -74,24 +75,27 @@ class Company extends Component {
             const volume = values[index]['5. volume'];
             processedData.push({ date, price, volume });
         }
-        const html = processedData.map((item, index) => {
-            return(
-                <tr key={index}>
-                    <td>{item.date}</td>
-                    <td>{item.price}</td>
-                    <td>{item.volume}</td>
-                </tr>
-            );
-        });
+        /* Please  uncomment the below lines of code to render data as a table  */
+        // const html = processedData.map((item, index) => {
+        //     return(
+        //         <tr key={index}>
+        //             <td>{item.date}</td>
+        //             <td>{item.price}</td>
+        //             <td>{item.volume}</td>
+        //         </tr>
+        //     );
+        // });
         return (
-            <table className="table table-stripped">
-                <tr>
-                    <th>Date</th>
-                    <th>Price</th>
-                    <th>Volume</th>
-                </tr>
-                { html }
-            </table>
+             /* Please  uncomment the below lines of code to render data as a table  */
+            // <table className="table table-stripped">
+            //     <tr>
+            //         <th>Date</th>
+            //         <th>Price</th>
+            //         <th>Volume</th>
+            //     </tr>
+            //     { html }
+            // </table>
+            <ChartRender processedData = {processedData} selectStock = {this.state.selectedStock}/>
         );
     }
 
