@@ -1,9 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { getWatchlistData } from './actions';
+import { getWatchlistData, setCompareList, setCheckboxSelectionList } from './actions';
+import Form from 'react-bootstrap/Form';
+import { Link } from 'react-router-dom';
+
 
 const RemoveStockBtn = styled.button`
+    font-size: 10px,
+    color: #fa3,
+    cursor: pointer
+`;
+
+const CompareStockBtn = styled.button`
     font-size: 10px,
     color: #fa3,
     cursor: pointer
@@ -17,6 +26,24 @@ class Watchlist extends React.Component {
     state = {
         watchlist: JSON.parse(localStorage.getItem('watchlist')) || [],
         watchlistData: []
+    }
+
+    //     handleCheckboxChange(index,event) {
+    //     const compareList = [];
+    //     event.target.checked === true ? compareList.push(this.state.watchlist[index]): compareList.splice(compareList.indexOf(this.state.watchlist[index]),1)
+    //     console.log(compareList)
+    //     this.props.setCompareList(compareList);
+    //   }
+
+    handleCheckboxChange(index, event) {
+        // const compareList = [];
+        // event.target.checked === true ? compareList.push(this.state.watchlist[index]): compareList.splice(compareList.indexOf(this.state.watchlist[index]),1)
+        const checkboxSelection = [...this.props.watchlist.checkboxSelectionList]
+        checkboxSelection[index] = event.target.checked;
+        this.props.setCheckboxSelectionList(checkboxSelection);
+
+        // console.log(compareList)
+        // this.props.setCompareList(compareList);
     }
 
     componentDidMount() {
@@ -58,6 +85,10 @@ class Watchlist extends React.Component {
                     <td>{price}</td>
                     <td>{volume}</td>
                     <td><RemoveStockBtn className="fa fa-times" onClick={() => this.removeStock(index)}></RemoveStockBtn></td>
+                    <td>
+                        <Form.Check type='checkbox' id={`checkbox${index}`} checked={this.props.watchlist.checkboxSelectionList[index]} onChange={(event) => this.handleCheckboxChange(index, event)} />
+                        <label for={`checkbox${index}`}>Check to compare</label>
+                    </td>
                 </tr>
             );
         });
@@ -68,26 +99,44 @@ class Watchlist extends React.Component {
                     <th>Price</th>
                     <th>Volume</th>
                     <th>Remove</th>
+                    <th>Check to compare</th>
                 </tr>
                 {html}
             </table>
         );
     }
 
+    compareStock() {
+        const selectedStocks = this.props.watchlist.checkboxSelectionList.map((item, index) => {
+            if (item) {
+                return this.state.watchlist[index];
+            }
+            else
+                return false
+        });
+        this.props.setCompareList(selectedStocks);
+    }
+
     render = () => (
         <div>
-             This is watchlist - {this.state.watchlist.length}
+            This is watchlist - {this.state.watchlist.length}
+            <Link to={{
+                pathname: `/comparision`,
+            }}><CompareStockBtn className="pull-right" onClick={() => this.compareStock()}>Compare</CompareStockBtn></Link>
             {this.renderWatchlist()}
         </div>
     )
 }
 
 const mapStateToProps = (state) => ({
-    watchlist: state.watchlist
+    watchlist: state.watchlist,
+
 })
 
 const mapDispatchToProps = {
-    getWatchlistData
+    getWatchlistData,
+    setCompareList,
+    setCheckboxSelectionList,
 };
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(Watchlist);

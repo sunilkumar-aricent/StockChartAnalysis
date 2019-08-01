@@ -31,7 +31,15 @@ export const getWatchlistData = (watchlist, callback) => {
         Promise.all(promises).then(([...res]) => {
             console.log(res);
             dispatch({ type: 'HIDE_LOADER' });
+
             callback(res);
         });
     }
+} 
+
+export  const setCheckboxSelectionList = (CheckboxSelectionList)=>{
+    return (dispatch)=> dispatch({type:'CHECKBOX_SELECTION_LIST', data : CheckboxSelectionList})
+} 
+export  const setCompareList = (compareList)=>{
+    return (dispatch)=> dispatch({type:'COMPARE_LIST', data : compareList})
 } 
