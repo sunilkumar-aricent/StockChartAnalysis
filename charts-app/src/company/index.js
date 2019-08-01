@@ -1,146 +1,87 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component} from 'react';
 import { connect } from 'react-redux';
-import axios from 'axios';
 import '../common/styles/company.css';
-import { getHistoricalData } from './action';
+import Typeahead from '../common/components/typeahead';
+import { getHistoricalData, searchCompany } from './action';
 import ChartRender from '../components/chartRender';
+import { processHistoricalData } from '../common/util';
 
 class Company extends Component {
-    state = { keyword: '', searchResult: '', selectedStock: '', historicalData: [] };
+    state = { selectedCompany: null, historicalData: [], duration: 30 };
 
-    getMatchesFromNse(keyword, callback) {
-        // axios.get(`https://www.screener.in/api/company/search/?q=${keyword}`).then((res) => {
-        axios.get(`https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/ajaxCompanySearch.jsp?search=${keyword}`).then((res) => {
-            // console.log(res.data);
-            // const data = getProcessedData(res.data);
-            callback(res.data);
-        });
+    durationOptions = [30, 90, 360, 1080, 1800];
+    
+    historicalDataCallback = (data) => {
+        this.setState({ historicalData: data });
     }
 
-    getKeywordMatches(e) {
-        const keyword = e.target.value
-        this.setState({ keyword });
-        if (keyword.length > 1) {
-            this.getMatchesFromNse(keyword, (searchResult) => {
-                this.setState({ searchResult });
-            });
-        } else {
-            this.setState({ searchResult: '' });
-        }
+    selectCompany = (selection) => {
+        this.setState({ selectedCompany: { name: selection.name, id: selection.id }});
+        const companyId = selection.id;
+        const duration = this.state.duration;
+        this.props.getHistoricalData({companyId, duration}, this.historicalDataCallback);
     }
 
-    selectStock(e) {
-        // need refactoring..
-        e.preventDefault();
-        this.setState({ searchResult: '', keyword: '' });
-        const stockDetails = {};
-        let target = e.target;
-        if (target.nodeName !== 'A') {
-            target = target.parentElement;
-        }
-        if (target.nodeName !== 'A') {
-            target = target.parentElement;
-        }
-        if (target.nodeName !== 'A') {
-            target = target.parentElement;
-        }
-        const queryString = target.getAttribute('href').split('?')[1];
-        queryString.split('&').map(item => {
-            const splits = item.split('=');
-            stockDetails[splits[0]] = splits[1];
-        });
-        this.setState({ selectedStock: stockDetails.symbol });
-        this.props.getHistoricalData(stockDetails.symbol, (data) => {
-            this.setState({ historicalData: data });
-        });
-    }
-
-    renderHistoricalData() {
+    renderHistoricalData = () => {
         const data = this.state.historicalData;
         if (data.length === 0) {
             return null;
         }
-        const processedData = [];
-        const keys = Object.keys(data['Time Series (Daily)']);
-        const values = Object.values(data['Time Series (Daily)']);
-        // values.map((item, index) => {
-        //     const date = keys[index];
-        //     const price = item['4. close'];
-        //     const volume = item['5. volume'];
-        //     processedData.push({ date, price, volume });
-        // });
-        for (let index = 0; index < 100; index++) {
-            const date = keys[index];
-            const price = values[index]['4. close'];
-            const volume = values[index]['5. volume'];
-            processedData.push({ date, price, volume });
-        }
-        const processedData2 = [];
-        processedData2.push(processedData);
-        const selectStock2 = [];
-        selectStock2.push(this.state.selectedStock);
-        /* Please  uncomment the below lines of code to render data as a table  */
-        // const html = processedData.map((item, index) => {
-        //     return(
-        //         <tr key={index}>
-        //             <td>{item.date}</td>
-        //             <td>{item.price}</td>
-        //             <td>{item.volume}</td>
-        //         </tr>
-        //     );
-        // });
+        const processedData = processHistoricalData(data.prices);
         return (
-            /* Please  uncomment the below lines of code to render data as a table  */
-            // <table className="table table-stripped">
-            //     <tr>
-            //         <th>Date</th>
-            //         <th>Price</th>
-            //         <th>Volume</th>
-            //     </tr>
-            //     { html }
-            // </table>
-
-            <ChartRender processedData={processedData2} selectStock={selectStock2} />
+            <ChartRender processedData = {processedData} selectStock = {this.state.selectedCompany}/>
         );
     }
 
     addToWatchlist = () => {
-        const selectedStock = this.state.selectedStock;
+        const selectedCompanyId = this.state.selectedCompany.id;
         const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
-        if (watchlist.indexOf(selectedStock) === -1) {
-            watchlist.push(selectedStock);
+        if (watchlist.indexOf(selectedCompanyId) === -1) {
+            watchlist.push(selectedCompanyId);
             localStorage.setItem('watchlist', JSON.stringify(watchlist));
         } else {
-            // stock already exist
             alert('stock already exist in the watchlist');
         }
     }
 
-    render() {
+    changeDuration = (duration) => {
+        this.setState({ duration });
+        const companyId = this.state.selectedCompany.id;
+        this.props.getHistoricalData({companyId, duration}, this.historicalDataCallback);
+    }
+
+    renderDuration = () => {
+        return (<div class="btn-group" role="group" aria-label="Basic example">
+            {this.durationOptions.map(item => {
+                const customClass = this.state.duration === item ? 'active' : ''; 
+                return (
+                    <button type="button" class={`btn btn-secondary ${customClass}`} disabled={!this.state.selectedCompany} onClick={() => this.changeDuration(item)}>{item}</button>
+                )
+            })}
+        </div>)
+    }
+
+    render = () => {
         return (
             <div id="company">
-                <div className="search-container">
-                    <div className="search-container-inner">
-                        <input type="text" onChange={(e) => this.getKeywordMatches(e)} value={this.state.keyword} />
-                        <div class="search-result" onClick={(e) => this.selectStock(e)} dangerouslySetInnerHTML={{ __html: this.state.searchResult }}></div>
-                    </div>
-                </div>
-                <h1>{!this.state.selectedStock ? 'No stock selected' : `Selected stock is: ${this.state.selectedStock}`}</h1>
-                {this.state.selectedStock && <button className="btn btn-primary" onClick={this.addToWatchlist}>Add to watchlist</button>}
+                {this.renderDuration()}
+                <Typeahead searchCompany={this.props.searchCompany} selectCompany={this.selectCompany} />
+                <h3>{!this.state.selectedCompany ? 'No company selected' : `Selected company is: ${this.state.selectedCompany.name}`}</h3>
+                {this.state.selectedCompany && <button className="btn btn-primary" onClick={this.addToWatchlist}>Add to watchlist</button>}
+                {/* <button className={`btn btn-primary ${styles.testButton}`}>test button</button> */}
                 {this.renderHistoricalData()}
             </div>
         )
     }
 }
 
-// export default Company;
-
 const mapStateToProps = (state) => ({
     company: state.company
 })
 
 const mapDispatchToProps = {
-    getHistoricalData
+    getHistoricalData,
+    searchCompany
 };
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(Company);

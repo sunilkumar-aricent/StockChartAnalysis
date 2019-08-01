@@ -14,3 +14,13 @@
     background-color: #ddd;
     transform: translate(50%)
 }
+
+.search-result-option {
+    list-style-type: none;
+    background-color: #eee;
+    border: 1px solid #ddd;
+}
+
+ul#search-typeahead {
+    display: none !important;
+}
