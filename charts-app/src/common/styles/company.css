@@ -21,6 +21,6 @@
     border: 1px solid #ddd;
 }
 
-ul.search-typeahead {
+ul#search-typeahead {
     display: none !important;
 }

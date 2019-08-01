@@ -41,7 +41,7 @@ class Typeahead extends React.Component {
           {/* <FormGroup>
             {this._renderCheckboxes()}
           </FormGroup> */}
-          <div>
+          <div style={{ position: 'absolute', width: '100%' }}>
               <ul>
                   {
                     this.state.options.map((item) => {
