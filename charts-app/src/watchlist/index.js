@@ -16,42 +16,40 @@ const updateLocalStorage = (item, data) => {
 class Watchlist extends React.Component {
     state = {
         watchlist: JSON.parse(localStorage.getItem('watchlist')) || [],
-        watchlist2: []
+        watchlistData: []
     }
 
     componentDidMount() {
         // make api call to get data for each item in watchlist
-        this.props.getWatchlistData(this.state.watchlist, (watchlistData) => {
-            console.log(watchlistData);
-            const watchlist2 = [];
-            watchlistData.forEach((element, index) => {
-                console.log(element);
-                // const keys = Object.keys(element.data['Time Series (Daily)']);
-                const values = Object.values(element.data['Time Series (Daily)']);
-                const price = values[0]['4. close'];
-                const volume = values[0]['5. volume'];
-                watchlist2.push({ price, volume });
+        this.props.getWatchlistData(this.state.watchlist, (watchlist) => {
+            console.log(watchlist);
+            const watchlistData = [];
+            watchlist.forEach((element, index) => {
+                const price = element.data.prices[0][1];
+                const volume = element.data.prices[0][3];
+                watchlistData.push({ price, volume });
             });
-            this.setState({ watchlist2 });
+            this.setState({ watchlistData });
         });
     }
 
     removeStock(index) {
         const watchlist = [...this.state.watchlist];
-        const watchlist2 = [...this.state.watchlist2];
+        const watchlistData = [...this.state.watchlistData];
         watchlist.splice(index, 1);
-        watchlist2.splice(index, 1);
+        watchlistData.splice(index, 1);
         updateLocalStorage('watchlist', watchlist);
-        this.setState({ watchlist, watchlist2 })
+        this.setState({ watchlist, watchlistData })
     }
 
     renderWatchlist() {
-        if( !this.state.watchlist2.length ) {
+        if( !this.state.watchlistData.length ) {
             return null;
         }
         // const watchlist = this.state.watchlist;
-        const html = this.state.watchlist2.map((item, index) => {
-            const company = this.state.watchlist[index];
+        const html = this.state.watchlistData.map((item, index) => {
+            // const company = item.company;
+            const company = this.state.watchlist[index].name;
             const price = item.price;
             const volume = item.volume;
             return (

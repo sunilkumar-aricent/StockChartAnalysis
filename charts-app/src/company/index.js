@@ -35,15 +35,26 @@ class Company extends Component {
     }
 
     addToWatchlist = () => {
-        const selectedCompanyId = this.state.selectedCompany.id;
+        const selectedCompany = { id: this.state.selectedCompany.id, name:  this.state.selectedCompany.name };
         const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
-        if (watchlist.indexOf(selectedCompanyId) === -1) {
-            watchlist.push(selectedCompanyId);
+        if (watchlist.filter(item => item.id === selectedCompany.id).length === 0) {
+            watchlist.push(selectedCompany);
             localStorage.setItem('watchlist', JSON.stringify(watchlist));
         } else {
             alert('stock already exist in the watchlist');
         }
     }
+
+    // addToWatchlist = () => {
+    //     const selectedCompanyId = this.state.selectedCompany.id;
+    //     const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+    //     if (watchlist.indexOf(selectedCompanyId) === -1) {
+    //         watchlist.push(selectedCompanyId);
+    //         localStorage.setItem('watchlist', JSON.stringify(watchlist));
+    //     } else {
+    //         alert('stock already exist in the watchlist');
+    //     }
+    // }
 
     changeDuration = (duration) => {
         this.setState({ duration });
