@@ -15,23 +15,57 @@ class ChartRender extends Component {
   //   return this.props.processedData[a].date
   // }
 
+  categoriesGenerator() {
+    const category = []
+    this.props.processedData.map(company => { company.map(val => category.push(val.date)) })
+    return category;
+  }
+
   seriesGenerator() {
     const seriesData = [];
     const type = this.state.chartType;
-    const name = this.props.selectStock;
-    const data = this.props.processedData.map(val => Number(val.price))
+    const names = this.props.selectStock;
+    let i;
+    //const data = this.props.processedData.map(val => Number(val.price))
     switch (this.state.chartType.toLowerCase()) {
       case 'line':
-        seriesData.push({ type, name, data })
+        i = 0;
+        this.props.processedData.map((companyData) => {
+          const data = companyData.map(val => Number(val.price));
+          seriesData.push({ type, name: names[i], data });
+          i++;
+        })
+
         break;
-      case 'spline': seriesData.push({ type, name, data })
+      case 'spline': i = 0;
+        this.props.processedData.map((companyData) => {
+          const data = companyData.map(val => Number(val.price));
+          seriesData.push({ type, name: names[i], data });
+          i++;
+        })
         break;
-      case 'bar': seriesData.push({ type: 'column', name, data })
+      case 'bar': i = 0;
+        this.props.processedData.map((companyData) => {
+          const data = companyData.map(val => Number(val.price));
+          seriesData.push({ type, name: names[i], data });
+          i++;
+        })
         break;
-      case 'combined': seriesData.push({ type: 'line', name, data });
-        seriesData.push({ type: 'column', name:'', data });
+      case 'combined':
+        i = 0;
+        this.props.processedData.map((companyData) => {
+          const data = companyData.map(val => Number(val.price));
+          seriesData.push({ type: 'line', name: names[i], data });
+          seriesData.push({ type: 'column', name: names[i], data });
+          i++;
+        })
         break;
-      default: seriesData.push({ type, name, data })
+      default: i = 0;
+        this.props.processedData.map((companyData) => {
+          const data = companyData.map(val => Number(val.price));
+          seriesData.push({ type, name: names[i], data });
+          i++;
+        })
         break;
     }
     return seriesData;
@@ -48,14 +82,17 @@ class ChartRender extends Component {
       },
       yAxis: {
         title: {
-          text: Object.keys(this.props.processedData[0])[1].toUpperCase()
+          text: 'Price'
+          //Object.keys(this.props.processedData[0])[1].toUpperCase()
         },
       },
       xAxis: {
         title: {
-          text: Object.keys(this.props.processedData[0])[0].toUpperCase()
+          text: 'date'
+          //Object.keys(this.props.processedData[0])[0].toUpperCase()
         },
-        categories: this.props.processedData.map(val => val.date)
+        categories: this.categoriesGenerator()
+        //this.props.processedData.map(company =>{company.map(val=>val.date)})
         //   labels :{
         //        formatter :()=>this.xAxisLable()
 

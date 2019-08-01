@@ -1,13 +1,13 @@
 import React, { Component, Fragment } from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import axios from 'axios';
 import '../common/styles/company.css';
 import { getHistoricalData } from './action';
 import ChartRender from '../components/chartRender';
 
 class Company extends Component {
-    state={ keyword: '', searchResult: '', selectedStock: '', historicalData: [] };
-    
+    state = { keyword: '', searchResult: '', selectedStock: '', historicalData: [] };
+
     getMatchesFromNse(keyword, callback) {
         // axios.get(`https://www.screener.in/api/company/search/?q=${keyword}`).then((res) => {
         axios.get(`https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/ajaxCompanySearch.jsp?search=${keyword}`).then((res) => {
@@ -20,7 +20,7 @@ class Company extends Component {
     getKeywordMatches(e) {
         const keyword = e.target.value
         this.setState({ keyword });
-        if(keyword.length > 1) {
+        if (keyword.length > 1) {
             this.getMatchesFromNse(keyword, (searchResult) => {
                 this.setState({ searchResult });
             });
@@ -35,13 +35,13 @@ class Company extends Component {
         this.setState({ searchResult: '', keyword: '' });
         const stockDetails = {};
         let target = e.target;
-        if(target.nodeName !== 'A') {
+        if (target.nodeName !== 'A') {
             target = target.parentElement;
         }
-        if(target.nodeName !== 'A') {
+        if (target.nodeName !== 'A') {
             target = target.parentElement;
         }
-        if(target.nodeName !== 'A') {
+        if (target.nodeName !== 'A') {
             target = target.parentElement;
         }
         const queryString = target.getAttribute('href').split('?')[1];
@@ -57,7 +57,7 @@ class Company extends Component {
 
     renderHistoricalData() {
         const data = this.state.historicalData;
-        if(data.length === 0) {
+        if (data.length === 0) {
             return null;
         }
         const processedData = [];
@@ -69,12 +69,16 @@ class Company extends Component {
         //     const volume = item['5. volume'];
         //     processedData.push({ date, price, volume });
         // });
-        for(let index=0; index<100; index++) {
+        for (let index = 0; index < 100; index++) {
             const date = keys[index];
             const price = values[index]['4. close'];
             const volume = values[index]['5. volume'];
             processedData.push({ date, price, volume });
         }
+        const processedData2 = [];
+        processedData2.push(processedData);
+        const selectStock2 = [];
+        selectStock2.push(this.state.selectedStock);
         /* Please  uncomment the below lines of code to render data as a table  */
         // const html = processedData.map((item, index) => {
         //     return(
@@ -86,7 +90,7 @@ class Company extends Component {
         //     );
         // });
         return (
-             /* Please  uncomment the below lines of code to render data as a table  */
+            /* Please  uncomment the below lines of code to render data as a table  */
             // <table className="table table-stripped">
             //     <tr>
             //         <th>Date</th>
@@ -95,7 +99,8 @@ class Company extends Component {
             //     </tr>
             //     { html }
             // </table>
-            <ChartRender processedData = {processedData} selectStock = {this.state.selectedStock}/>
+
+            <ChartRender processedData={processedData2} selectStock={selectStock2} />
         );
     }
 
@@ -117,7 +122,7 @@ class Company extends Component {
                 <div className="search-container">
                     <div className="search-container-inner">
                         <input type="text" onChange={(e) => this.getKeywordMatches(e)} value={this.state.keyword} />
-                        <div class="search-result" onClick={(e) => this.selectStock(e)} dangerouslySetInnerHTML={{ __html: this.state.searchResult}}></div>
+                        <div class="search-result" onClick={(e) => this.selectStock(e)} dangerouslySetInnerHTML={{ __html: this.state.searchResult }}></div>
                     </div>
                 </div>
                 <h1>{!this.state.selectedStock ? 'No stock selected' : `Selected stock is: ${this.state.selectedStock}`}</h1>
@@ -131,7 +136,7 @@ class Company extends Component {
 // export default Company;
 
 const mapStateToProps = (state) => ({
-    company: state.company 
+    company: state.company
 })
 
 const mapDispatchToProps = {
