@@ -53,8 +53,8 @@ app.get('/searchCompany', (req, res) => {
 
 
 app.get('/historicalData', (req, res) => {
-    const companyId = req.query.id;
-    const duration = 356;
+    const companyId = req.query.companyId;
+    const duration = req.query.duration || 356;
     https.get(`https://www.screener.in/api/2/company/${companyId}/prices/?days=${duration}`, (resp) => {
     let data = '';
 
