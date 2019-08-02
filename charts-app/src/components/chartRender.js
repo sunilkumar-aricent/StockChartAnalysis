@@ -22,6 +22,8 @@ class ChartRender extends Component {
       case 'bar': {
         const data = stockData.map((item) => Number(item.price));
         seriesData.push({ type, name, data });
+        const volumeData = stockData.map((item) => Number(item.volume));
+        seriesData.push({ type: 'column', name: `volume_${name}`, data: volumeData, yAxis: 1 });
         break;
       }
       
@@ -59,11 +61,16 @@ class ChartRender extends Component {
         layout: 'vertical',
         x: -50,
       },
-      yAxis: {
+      yAxis: [{
         title: {
           text: 'Price'
         },
-      },
+      },{
+        title: {
+          text: 'Volume'
+        },
+        opposite: true
+      }],
       xAxis: {
         title: {
           text: 'date'
