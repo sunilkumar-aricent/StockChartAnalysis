@@ -1,4 +1,4 @@
-const initialState = { showLoader: false }
+const initialState = { showLoader: false, compareList : [] }
 
 const commonReducer = (state = initialState, action) => {
     switch(action.type) {
@@ -12,6 +12,11 @@ const commonReducer = (state = initialState, action) => {
             newState.showLoader = false;
             return newState;
         }
+        case 'COMPARE_LIST':
+            return {
+                ...state,
+                compareList : action.data
+            }
         default: return state;
     }
 }

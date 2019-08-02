@@ -10,14 +10,7 @@ class ChartRender extends Component {
     chartType: 'spline'
   }
 
-  // xAxisLable() {
-  //   a = a + 1;
-  //   return this.props.processedData[a].date
-  // }
-
   categoriesGenerator() {
-    // const category = []
-    // this.props.processedData.map(company => { company.map(val => category.push(val.date)) })
     const category = this.props.processedData.map(item => item.date);
     return category;
   }
@@ -75,30 +68,45 @@ class ChartRender extends Component {
   //   return seriesData;
   // }
 
-  getSeriesData() {
+  getSeriesData(stockData, name) {
     const seriesData = [];
-    const type = this.state.chartType;
-    const name = this.props.selectStock;
-    switch (this.state.chartType.toLowerCase()) {
+    const type = this.state.chartType.toLocaleLowerCase();
+    switch (type) {
       case 'line':
       case 'spline':
-      case 'bar':
-        const data = this.props.processedData.map((item) => Number(item.price));
+      case 'bar': {
+        const data = stockData.map((item) => Number(item.price));
         seriesData.push({ type, name, data });
         break;
-      case 'combined':
-        this.props.processedData.map((companyData) => {
-          const data = this.props.processedData.map(val => Number(val.price));
-          seriesData.push({ type: 'line', data });
-          seriesData.push({ type: 'column', name, data });
-        })
+      }
+      case 'combined': {
+        const data = stockData.map(val => Number(val.price));
+        seriesData.push({ type: 'line', data });
+        seriesData.push({ type: 'column', name, data });
         break;
+      }
     }
     return seriesData;
   }
 
+  getData() {
+    const seriesData = [];
+    this.props.processedData.forEach((element, index) => {
+      const name = this.props.compareList[index].name;
+      seriesData.push(this.getSeriesData(element, name));
+    });
+    const finalData = [];
+    seriesData.forEach(i => {
+      i.forEach(j => {
+        finalData.push(j);
+      })
+    });
+    return finalData;
+  }
+
   render() {
     const chartTypes = ['line', 'spline', 'bar', 'combined'];
+    const title = this.props.compareList.length === 1 ? `Chart for ${this.props.compareList[0].name}` : `Comparision chart`;
     const options = {
       legend: {
         align: 'right',
@@ -118,11 +126,6 @@ class ChartRender extends Component {
           //Object.keys(this.props.processedData[0])[0].toUpperCase()
         },
         categories: this.categoriesGenerator()
-        //this.props.processedData.map(company =>{company.map(val=>val.date)})
-        //   labels :{
-        //        formatter :()=>this.xAxisLable()
-
-        // }
       },
       labels: {
         items: [{
@@ -134,9 +137,9 @@ class ChartRender extends Component {
         }]
       },
       title: {
-        text: `STOCK Line Chart for ${this.props.selectStock}`
+        text: title
       },
-      series: this.getSeriesData(),
+      series: this.getData(),
     };
 
     return (<div>

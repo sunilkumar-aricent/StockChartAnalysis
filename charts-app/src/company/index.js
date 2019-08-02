@@ -29,7 +29,7 @@ class Company extends Component {
         }
         const processedData = processHistoricalData(data.prices);
         return (
-            <ChartRender processedData = {processedData} selectStock = {this.state.selectedCompany.name}/>
+            <ChartRender processedData = {[processedData]} compareList = {[this.state.selectedCompany]}/>
         );
     }
 
@@ -39,21 +39,11 @@ class Company extends Component {
         if (watchlist.filter(item => item.id === selectedCompany.id).length === 0) {
             watchlist.push(selectedCompany);
             localStorage.setItem('watchlist', JSON.stringify(watchlist));
+            alert('stock added successfully');
         } else {
             alert('stock already exist in the watchlist');
         }
     }
-
-    // addToWatchlist = () => {
-    //     const selectedCompanyId = this.state.selectedCompany.id;
-    //     const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
-    //     if (watchlist.indexOf(selectedCompanyId) === -1) {
-    //         watchlist.push(selectedCompanyId);
-    //         localStorage.setItem('watchlist', JSON.stringify(watchlist));
-    //     } else {
-    //         alert('stock already exist in the watchlist');
-    //     }
-    // }
 
     changeDuration = (duration) => {
         this.setState({ duration });
@@ -77,7 +67,7 @@ class Company extends Component {
             <div id="company">
                 {this.renderDuration()}
                 <Typeahead searchCompany={this.props.searchCompany} selectCompany={this.selectCompany} />
-                <h3>{!this.state.selectedCompany ? 'No company selected' : `Selected company is: ${this.state.selectedCompany.name}`}</h3>
+                <h3>{!this.state.selectedCompany ? 'Please select a company to continue' : `Selected company is: ${this.state.selectedCompany.name}`}</h3>
                 {this.state.selectedCompany && <button className="btn btn-primary" onClick={this.addToWatchlist}>Add to watchlist</button>}
                 {/* <button className={`btn btn-primary ${styles.testButton}`}>test button</button> */}
                 {this.renderHistoricalData()}

@@ -2,41 +2,48 @@ import React from 'react';
 import { connect } from 'react-redux';
 import ChartRender from '../components/chartRender';
 import { getComparisionListData } from './action'
+import { getWatchlistData } from '../watchlist/actions'
 
 class Comparision extends React.Component {
     state = {
         compareStocksData: [],
-
     }
 
     componentDidMount() {
-
-        this.props.getComparisionListData(this.props.comparision.compareList, (compareListData) => {
+        // const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+        const compareList = this.props.common.compareList;
+        this.props.getComparisionListData(compareList, (compareListData) => {
             const compareStocksData = [];
-            compareListData.forEach((element, index) => {
-                const keys = Object.keys(element.data['Time Series (Daily)']);
-                const values = Object.values(element.data['Time Series (Daily)']);
-                const compareList2 = []
-                for (let index = 0; index < 100; index++) {
-                    const date = keys[index];
-                    const price = values[index]['4. close'];
-                    const volume = values[index]['5. volume'];
-                    compareList2.push({ date, price, volume });
+            compareListData.forEach((element, i) => {
+                const data = element.data.prices;
+                const processedData = []
+                for (let index = 0; index < data.length; index++) {
+                    const date = data[index][0];
+                    const price = data[index][1];
+                    const volume = data[index][3];
+                    processedData.push({ date, price, volume });
                 }
-                compareStocksData.push(compareList2)
+                compareStocksData.push(processedData)
             });
             this.setState({ compareStocksData });
         });
+
+        // this.props.getWatchlistData(this.state.watchlist, (watchlist) => {
+        //     console.log(watchlist);
+        //     const watchlistData = [];
+        //     watchlist.forEach((element, index) => {
+        //         const price = element.data.prices[0][1];
+        //         const volume = element.data.prices[0][3];
+        //         watchlistData.push({ price, volume });
+        //     });
+        //     this.setState({ watchlistData });
+        // });
     }
     renderCompareListChart() {
-        if (!this.props.comparision.compareList || !this.props.comparision.compareList) {
+        if (!this.props.common.compareList || !this.props.common.compareList.length) {
             return null;
         }
-        const compareChart = //this.state.compareStocksData.map((companyData)=>{
-            <ChartRender processedData={this.state.compareStocksData} selectStock={this.props.comparision.compareList}></ChartRender>
-        //  });
-        return compareChart
-
+        return (<ChartRender processedData={this.state.compareStocksData} compareList={this.props.common.compareList}></ChartRender>);
     }
     render = () => (
         <div>
@@ -48,11 +55,13 @@ class Comparision extends React.Component {
 
 const mapStateToProps = (state) => ({
     comparision: state.comparision,
+    common: state.common
 
 })
 
 const mapDispatchToProps = {
-    getComparisionListData
+    getComparisionListData,
+    getWatchlistData
 };
 
 const combinedStocks = connect(mapStateToProps, mapDispatchToProps)(Comparision);
