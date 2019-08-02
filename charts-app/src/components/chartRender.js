@@ -77,14 +77,16 @@ class ChartRender extends Component {
     switch (type) {
       case 'line':
       case 'spline':
+      default:
       case 'bar': {
         const data = stockData.map((item) => Number(item.price));
         seriesData.push({ type, name, data });
         break;
       }
+      
       case 'combined': {
         const data = stockData.map(val => Number(val.price));
-        seriesData.push({ type: 'line', data });
+        seriesData.push({ type: 'line', name, data });
         seriesData.push({ type: 'column', name, data });
         break;
       }
