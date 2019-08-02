@@ -29,7 +29,7 @@ class Company extends Component {
         }
         const processedData = processHistoricalData(data.prices);
         return (
-            <ChartRender processedData = {processedData} selectStock = {this.state.selectedCompany}/>
+            <ChartRender processedData = {processedData} selectStock = {this.state.selectedCompany.name}/>
         );
     }
 

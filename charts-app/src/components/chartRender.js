@@ -7,7 +7,7 @@ import Dropdown from 'react-bootstrap/Dropdown'
 class ChartRender extends Component {
 
   state = {
-    chartType: ''
+    chartType: 'spline'
   }
 
   // xAxisLable() {
@@ -16,55 +16,81 @@ class ChartRender extends Component {
   // }
 
   categoriesGenerator() {
-    const category = []
-    this.props.processedData.map(company => { company.map(val => category.push(val.date)) })
+    // const category = []
+    // this.props.processedData.map(company => { company.map(val => category.push(val.date)) })
+    const category = this.props.processedData.map(item => item.date);
     return category;
   }
 
-  seriesGenerator() {
+  // seriesGenerator() {
+  //   const seriesData = [];
+  //   const type = this.state.chartType;
+  //   const names = this.props.selectStock;
+  //   let i;
+  //   //const data = this.props.processedData.map(val => Number(val.price))
+  //   switch (this.state.chartType.toLowerCase()) {
+  //     case 'line':
+  //       i = 0;
+  //       this.props.processedData.map((companyData) => {
+  //         const data = companyData.map(val => Number(val.price));
+  //         seriesData.push({ type, name: names[i], data });
+  //         i++;
+  //       })
+
+  //       break;
+  //     case 'spline': i = 0;
+  //       this.props.processedData.map((companyData) => {
+  //         const data = companyData.map(val => Number(val.price));
+  //         seriesData.push({ type, name: names[i], data });
+  //         i++;
+  //       })
+  //       break;
+  //     case 'bar': i = 0;
+  //       this.props.processedData.map((companyData) => {
+  //         const data = companyData.map(val => Number(val.price));
+  //         seriesData.push({ type, name: names[i], data });
+  //         i++;
+  //       })
+  //       break;
+  //     case 'combined':
+  //       i = 0;
+  //       this.props.processedData.map((companyData) => {
+  //         const data = companyData.map(val => Number(val.price));
+  //         seriesData.push({ type: 'line', name: names[i], data });
+  //         seriesData.push({ type: 'column', name: names[i], data });
+  //         i++;
+  //       })
+  //       break;
+  //     default: i = 0;
+  //       // this.props.processedData.map((companyData) => {
+  //       //   const data = companyData.map(val => Number(val.price));
+  //       //   seriesData.push({ type, name: names[i], data });
+  //       //   i++;
+  //       // })
+  //       const data = this.props.processedData.map((item) => Number(item.price));
+  //       seriesData.push({ name: this.props.selectStock.name, data });
+  //       i++;
+  //       break;
+  //   }
+  //   return seriesData;
+  // }
+
+  getSeriesData() {
     const seriesData = [];
     const type = this.state.chartType;
-    const names = this.props.selectStock;
-    let i;
-    //const data = this.props.processedData.map(val => Number(val.price))
+    const name = this.props.selectStock;
     switch (this.state.chartType.toLowerCase()) {
       case 'line':
-        i = 0;
-        this.props.processedData.map((companyData) => {
-          const data = companyData.map(val => Number(val.price));
-          seriesData.push({ type, name: names[i], data });
-          i++;
-        })
-
-        break;
-      case 'spline': i = 0;
-        this.props.processedData.map((companyData) => {
-          const data = companyData.map(val => Number(val.price));
-          seriesData.push({ type, name: names[i], data });
-          i++;
-        })
-        break;
-      case 'bar': i = 0;
-        this.props.processedData.map((companyData) => {
-          const data = companyData.map(val => Number(val.price));
-          seriesData.push({ type, name: names[i], data });
-          i++;
-        })
+      case 'spline':
+      case 'bar':
+        const data = this.props.processedData.map((item) => Number(item.price));
+        seriesData.push({ type, name, data });
         break;
       case 'combined':
-        i = 0;
         this.props.processedData.map((companyData) => {
-          const data = companyData.map(val => Number(val.price));
-          seriesData.push({ type: 'line', name: names[i], data });
-          seriesData.push({ type: 'column', name: names[i], data });
-          i++;
-        })
-        break;
-      default: i = 0;
-        this.props.processedData.map((companyData) => {
-          const data = companyData.map(val => Number(val.price));
-          seriesData.push({ type, name: names[i], data });
-          i++;
+          const data = this.props.processedData.map(val => Number(val.price));
+          seriesData.push({ type: 'line', data });
+          seriesData.push({ type: 'column', name, data });
         })
         break;
     }
@@ -100,7 +126,6 @@ class ChartRender extends Component {
       },
       labels: {
         items: [{
-
           style: {
             left: '50px',
             top: '18px',
@@ -111,12 +136,19 @@ class ChartRender extends Component {
       title: {
         text: `STOCK Line Chart for ${this.props.selectStock}`
       },
-      series: this.seriesGenerator(),
+      series: this.getSeriesData(),
     };
 
     return (<div>
       <DropdownButton id="dropdown-item-button" title="Chart-Type" variant='secondary' size='sm'>
-        {chartTypes.map(chartType => <Dropdown.Item as="button" onClick={() => this.setState({ chartType: chartType })}>{`${chartType.toUpperCase()}-Chart`}</Dropdown.Item>)}
+        {chartTypes.map(chartType => (
+          <Dropdown.Item
+            as="button"
+            onClick={() => this.setState({ chartType })}
+          >
+            {`${chartType.toUpperCase()}-Chart`}
+          </Dropdown.Item>))
+        }
       </DropdownButton>
       <HighchartsReact
         highcharts={Highcharts}
