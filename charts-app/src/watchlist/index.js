@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { getWatchlistData, setCompareList, setCheckboxSelectionList } from './actions';
 import Form from 'react-bootstrap/Form';
 import { Link } from 'react-router-dom';
+import '../common/styles/watchlist.css';
 
 
 const RemoveStockBtn = styled.button`
@@ -33,7 +34,6 @@ class Watchlist extends React.Component {
     }
 
     getCheckboxSelectionList = () => {
-        debugger
         const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
         const selectedIds = this.props.common.compareList.map(item => item.id);
         const checkboxSelectionList = watchlist.map(item => {
@@ -93,8 +93,7 @@ class Watchlist extends React.Component {
                     <td>{volume}</td>
                     <td><RemoveStockBtn className="fa fa-times" onClick={() => this.removeStock(index)}></RemoveStockBtn></td>
                     <td>
-                        <Form.Check type='checkbox' id={`checkbox${index}`} checked={checked} onChange={(event) => this.handleCheckboxChange(index, event)} />
-                        <label for={`checkbox${index}`}>Check to compare</label>
+                        <Form.Check type='checkbox' checked={checked} onChange={(event) => this.handleCheckboxChange(index, event)} />
                     </td>
                 </tr>
             );
@@ -106,7 +105,7 @@ class Watchlist extends React.Component {
                     <th>Price</th>
                     <th>Volume</th>
                     <th>Remove</th>
-                    <th>Check to compare</th>
+                    <th>Select to compare</th>
                 </tr>
                 {html}
             </table>

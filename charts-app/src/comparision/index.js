@@ -1,5 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from 'react-bootstrap/Dropdown'
 import ChartRender from '../components/chartRender';
 import { getComparisionListData } from './action'
 import { getWatchlistData } from '../watchlist/actions'
@@ -7,10 +9,12 @@ import { getWatchlistData } from '../watchlist/actions'
 class Comparision extends React.Component {
     state = {
         compareStocksData: [],
+        chartType: 'spline'
     }
 
+    chartTypes = ['line', 'spline', 'bar', 'combined'];
+
     componentDidMount() {
-        // const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
         const compareList = this.props.common.compareList;
         this.props.getComparisionListData(compareList, (compareListData) => {
             const compareStocksData = [];
@@ -28,27 +32,32 @@ class Comparision extends React.Component {
             this.setState({ compareStocksData });
         });
 
-        // this.props.getWatchlistData(this.state.watchlist, (watchlist) => {
-        //     console.log(watchlist);
-        //     const watchlistData = [];
-        //     watchlist.forEach((element, index) => {
-        //         const price = element.data.prices[0][1];
-        //         const volume = element.data.prices[0][3];
-        //         watchlistData.push({ price, volume });
-        //     });
-        //     this.setState({ watchlistData });
-        // });
     }
     renderCompareListChart() {
         if (!this.props.common.compareList || !this.props.common.compareList.length) {
             return null;
         }
-        return (<ChartRender processedData={this.state.compareStocksData} compareList={this.props.common.compareList}></ChartRender>);
+        return (<ChartRender chartType={this.state.chartType} processedData={this.state.compareStocksData} compareList={this.props.common.compareList}></ChartRender>);
+    }
+    renderChartType = () => {
+        return (
+            <DropdownButton id="dropdown-item-button" title="Chart-Type" variant='primary' size='md'>
+                {this.chartTypes.map(chartType => (
+                    <Dropdown.Item
+                        as="button"
+                        onClick={() => this.setState({ chartType })}
+                    >
+                        {`${chartType.toUpperCase()}-Chart`}
+                    </Dropdown.Item>))
+                }
+            </DropdownButton>
+        );
     }
     render = () => (
         <div>
-            This is comparision component
-             {this.renderCompareListChart()}
+            {this.props.common.compareList.length === 0 ? 'Please select companies from watchlist' : '' }
+            {this.renderChartType()}
+            {this.renderCompareListChart()}
         </div>
     )
 }

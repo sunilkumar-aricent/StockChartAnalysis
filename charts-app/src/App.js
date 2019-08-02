@@ -18,10 +18,12 @@ function App({ common }) {
       {common.showLoader && <Loader />} 
       <BrowserRouter>
         <Navigation />
-        <Route exact path="/" component={Company} />
-        <Route path="/company" component={Company} />
-        <Route path="/watchlist" component={Watchlist} />
-        <Route path="/comparision" component={Comparision} />
+        <div class="container">
+          <Route exact path="/" component={Company} />
+          <Route path="/company" component={Company} />
+          <Route path="/watchlist" component={Watchlist} />
+          <Route path="/comparision" component={Comparision} />
+        </div>
       </BrowserRouter>
     </div>
   );

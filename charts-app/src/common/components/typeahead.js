@@ -41,8 +41,8 @@ class Typeahead extends React.Component {
           {/* <FormGroup>
             {this._renderCheckboxes()}
           </FormGroup> */}
-          <div style={{ position: 'absolute', width: '100%' }}>
-              <ul>
+          <div class="search-result-container">
+              <ul class="search-result">
                   {
                     this.state.options.map((item) => {
                         return <li className="search-result-option" key={item.id} onClick={() => this.selectCompany(item)}>{item.name}</li>
@@ -53,29 +53,6 @@ class Typeahead extends React.Component {
         </Fragment>
       );
     }
-  
-    // _renderCheckboxes() {
-    //   const checkboxes = [
-    //     {label: 'Multi-Select', name: 'multiple'},
-    //     {label: 'Allow custom selections', name: 'allowNew'},
-    //   ];
-  
-    //   return checkboxes.map(({label, name}) => (
-    //     <Control
-    //       checked={this.state[name]}
-    //       key={name}
-    //       name={name}
-    //       onChange={this._handleChange}
-    //       type="checkbox">
-    //       {label}
-    //     </Control>
-    //   ));
-    // }
-  
-    // _handleChange = (e) => {
-    //   const {checked, name} = e.target;
-    //   this.setState({[name]: checked});
-    // }
   
     _handleSearch = (query) => {
       this.setState({isLoading: true});
