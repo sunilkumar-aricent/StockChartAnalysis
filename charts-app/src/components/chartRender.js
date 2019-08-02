@@ -11,7 +11,10 @@ class ChartRender extends Component {
   }
 
   categoriesGenerator() {
-    const category = this.props.processedData.map(item => item.date);
+    let category = []
+    this.props.processedData.forEach(company => {
+      category = company.map(item=>item.date)}
+      );
     return category;
   }
 
