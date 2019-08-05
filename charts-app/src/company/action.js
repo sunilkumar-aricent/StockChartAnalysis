@@ -17,6 +17,18 @@ export const getHistoricalData = ({companyId, duration}, callback) => {
     }
 }
 
+export const getConsolidatedData = ({url}, callback) => {
+    return (dispatch) => {
+        dispatch({ type: 'SHOW_LOADER' });
+        callback({consolidatedData: {test: 'testData'}});
+        // axios.get(`http://localhost:3300/historicalData?companyId=${companyId}&duration=${duration}`).then((res) => {
+        //     console.log(res.data);
+        //     dispatch({ type: 'HIDE_LOADER' });
+        //     callback(res.data);
+        // })
+    }
+}
+
 export const searchCompany = (data, callback) => {
     return (dispatch) => {
         dispatch({ type: 'SHOW_LOADER' });

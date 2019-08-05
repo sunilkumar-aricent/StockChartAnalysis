@@ -28,7 +28,23 @@ app.get('/query', (req, res) => {
     });
 })
 
+app.get('/consolidatedData', (req, res) => {
+    const url = req.query.url;
+    https.get(`https://www.screener.in/${url}`, (resp) => {
+        let data = '';
 
+        resp.on('data', (chunk) => {
+            data += chunk;
+        });
+
+        resp.on('end', () => {
+            res.send(data);
+        });
+
+    }).on("error", (err) => {
+        console.log("Error: " + err.message);
+    });
+})
 
 app.get('/searchCompany', (req, res) => {
     const data = req.query.data;

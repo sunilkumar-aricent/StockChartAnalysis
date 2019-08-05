@@ -4,33 +4,45 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown'
 import '../common/styles/company.css';
 import Typeahead from '../common/components/typeahead';
-import { getHistoricalData, searchCompany } from './action';
+import { getHistoricalData, searchCompany, getConsolidatedData } from './action';
 import ChartRender from '../components/chartRender';
 import { processHistoricalData } from '../common/util';
 
 class Company extends Component {
-    state = { selectedCompany: {id: 1351, name: 'Hindustan Zinc Ltd'}, historicalData: [], duration: 360, chartType: 'spline'
-};
+    state = {
+        selectedCompany: {id: 1351, name: 'Hindustan Zinc Ltd'},
+        historicalData: [],
+        duration: 360,
+        chartType: 'spline'
+    };
 
-    durationOptions = [30, 90, 360, 1080, 1800];
+    durationOptions = [{id: 30, label: '1m'}, {id: 90, label: '3m'}, {id: 180, label: '6m'}, {id: 365, label: '1Yr'}, {id: 1080, label: '3Yr'}, {id: 1800, label: 'Max'}];
+    
     chartTypes = ['line', 'spline', 'bar', 'combined'];
 
-    
     componentDidMount() {
         const companyId = this.state.selectedCompany.id;
         const duration = this.state.duration;
+        const url = this.state.selectedCompany.url;
         this.props.getHistoricalData({companyId, duration}, this.historicalDataCallback);
+        this.props.getConsolidatedData({url}, this.consolidatedDataCallback);
     }
     
     historicalDataCallback = (data) => {
         this.setState({ historicalData: data });
     }
 
+    consolidatedDataCallback = (data) => {
+        console.log(data);
+    }
+
     selectCompany = (selection) => {
         this.setState({ selectedCompany: { name: selection.name, id: selection.id }});
         const companyId = selection.id;
         const duration = this.state.duration;
+        const url = this.state.selectedCompany.url;
         this.props.getHistoricalData({companyId, duration}, this.historicalDataCallback);
+        this.props.getConsolidatedData({url}, this.consolidatedDataCallback);
     }
 
     renderHistoricalData = () => {
@@ -65,9 +77,9 @@ class Company extends Component {
     renderDuration = () => {
         return (<div class="btn-group pull-left ml-5" role="group" aria-label="Basic example">
             {this.durationOptions.map(item => {
-                const customClass = this.state.duration === item ? 'active' : ''; 
+                const customClass = this.state.duration === item.id ? 'active' : ''; 
                 return (
-                    <button type="button" class={`btn btn-secondary ${customClass}`} disabled={!this.state.selectedCompany} onClick={() => this.changeDuration(item)}>{item}</button>
+                    <button type="button" class={`btn btn-secondary ${customClass}`} disabled={!this.state.selectedCompany} onClick={() => this.changeDuration(item.id)}>{item.label}</button>
                 )
             })}
         </div>);
@@ -119,6 +131,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
     getHistoricalData,
+    getConsolidatedData,
     searchCompany
 };
 
