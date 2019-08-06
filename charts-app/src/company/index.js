@@ -10,54 +10,66 @@ import { processHistoricalData } from '../common/util';
 
 class Company extends Component {
     state = {
-        selectedCompany: {id: 1351, name: 'Hindustan Zinc Ltd'},
+        // selectedCompany: {id: 1351, name: 'Hindustan Zinc Ltd'},
+        selectedCompany: { id: 3365, name: 'Tata Consultancy Services Ltd', url: '/company/TCS/consolidated/' },
         historicalData: [],
-        duration: 360,
+        consolidatedData: [],
+        duration: 1080,
         chartType: 'spline'
     };
 
-    durationOptions = [{id: 30, label: '1m'}, {id: 90, label: '3m'}, {id: 180, label: '6m'}, {id: 365, label: '1Yr'}, {id: 1080, label: '3Yr'}, {id: 1800, label: 'Max'}];
+    durationOptions = [
+        {id: 30, label: '1m'},
+        {id: 90, label: '3m'},
+        {id: 180, label: '6m'},
+        {id: 365, label: '1Yr'},
+        {id: 1080, label: '3Yr'},
+        {id: 1800, label: 'Max'}
+    ];
     
     chartTypes = ['line', 'spline', 'bar', 'combined'];
 
     componentDidMount() {
-        const companyId = this.state.selectedCompany.id;
         const duration = this.state.duration;
+        const companyId = this.state.selectedCompany.id;
         const url = this.state.selectedCompany.url;
         this.props.getHistoricalData({companyId, duration}, this.historicalDataCallback);
         this.props.getConsolidatedData({url}, this.consolidatedDataCallback);
     }
     
     historicalDataCallback = (data) => {
-        this.setState({ historicalData: data });
+        this.setState({ historicalData: data.prices });
     }
 
     consolidatedDataCallback = (data) => {
-        console.log(data);
+        this.setState({ consolidatedData: data });
     }
 
     selectCompany = (selection) => {
-        this.setState({ selectedCompany: { name: selection.name, id: selection.id }});
-        const companyId = selection.id;
+        const selectedCompany = {...selection};
+        this.setState({ selectedCompany });
         const duration = this.state.duration;
-        const url = this.state.selectedCompany.url;
+        const companyId = selection.id;
+        const url = selection.url;
         this.props.getHistoricalData({companyId, duration}, this.historicalDataCallback);
         this.props.getConsolidatedData({url}, this.consolidatedDataCallback);
     }
 
-    renderHistoricalData = () => {
-        const data = this.state.historicalData;
-        if (data.length === 0) {
+    renderChart = () => {
+        const priceData = this.state.historicalData;
+        const consolidatedData = this.state.consolidatedData;
+        if (priceData.length === 0) {
             return null;
         }
-        const processedData = processHistoricalData(data.prices);
+        const chartData = processHistoricalData(priceData, consolidatedData);
         return (
-            <ChartRender chartType={this.state.chartType} processedData = {[processedData]} compareList = {[this.state.selectedCompany]}/>
+            <ChartRender chartType={this.state.chartType} processedData = {[chartData]} compareList = {[this.state.selectedCompany]}/>
         );
     }
 
     addToWatchlist = () => {
-        const selectedCompany = { id: this.state.selectedCompany.id, name:  this.state.selectedCompany.name };
+        // const selectedCompany = { id: this.state.selectedCompany.id, name:  this.state.selectedCompany.name };
+        const selectedCompany = this.state.selectedCompany;
         const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
         if (watchlist.filter(item => item.id === selectedCompany.id).length === 0) {
             watchlist.push(selectedCompany);
@@ -118,7 +130,7 @@ class Company extends Component {
                 </div>
                 <div class="col-12">
                     {/* <button className={`btn btn-primary ${styles.testButton}`}>test button</button> */}
-                    {this.renderHistoricalData()}
+                    {this.renderChart()}
                 </div>
             </div>
         )

@@ -30,7 +30,10 @@ app.get('/query', (req, res) => {
 
 app.get('/consolidatedData', (req, res) => {
     const url = req.query.url;
+    console.log(url);
     https.get(`https://www.screener.in/${url}`, (resp) => {
+        res.type('html');
+        console.log('res received');
         let data = '';
 
         resp.on('data', (chunk) => {

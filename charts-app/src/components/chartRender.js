@@ -7,8 +7,8 @@ class ChartRender extends Component {
   categoriesGenerator() {
     let category = []
     this.props.processedData.forEach(company => {
-      category = company.map(item=>item.date)}
-      );
+      category = company.map(item=>item.date)
+    });
     return category;
   }
 
@@ -18,12 +18,18 @@ class ChartRender extends Component {
     switch (type) {
       case 'line':
       case 'spline':
-      default:
       case 'bar': {
-        const data = stockData.map((item) => Number(item.price));
-        seriesData.push({ type, name, data });
-        const volumeData = stockData.map((item) => Number(item.volume));
-        seriesData.push({ type: 'column', name: `volume_${name}`, data: volumeData, yAxis: 1 });
+        const priceData = stockData.map((item) => item.price);
+        seriesData.push({ type, name: `${name}_price`, data: priceData });
+        
+        const volumeData = stockData.map((item) => item.volume);
+        seriesData.push({ type: 'column', name: `${name}_volume`, data: volumeData, yAxis: 1 });
+        
+        const revenueData = stockData.map((item) => item.revenue);
+        seriesData.push({ type: 'column', name: `${name}_revenue`, data: revenueData, yAxis: 2 });
+
+        const profitData = stockData.map((item) => item.profit);
+        seriesData.push({ type: 'spline', name: `${name}_profit`, data: profitData, yAxis: 3, connectNulls: true });
         break;
       }
       
@@ -55,6 +61,10 @@ class ChartRender extends Component {
   render() {
     const title = this.props.compareList.length === 1 ? `Chart for ${this.props.compareList[0].name}` : `Comparision chart`;
     const options = {
+      // chart: {
+      //   marginRight: 260,
+      //   marginLeft: 260
+      // },
       legend: {
         align: 'center',
         verticalAlign: 'bottom',
@@ -68,6 +78,15 @@ class ChartRender extends Component {
       },{
         title: {
           text: 'Volume'
+        },
+        opposite: true
+      },{
+        title: {
+          text: 'Revenue'
+        },
+      },{
+        title: {
+          text: 'Profit'
         },
         opposite: true
       }],

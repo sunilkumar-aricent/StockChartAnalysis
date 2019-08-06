@@ -17,15 +17,57 @@ export const getHistoricalData = ({companyId, duration}, callback) => {
     }
 }
 
+const getMonth = (month) => {
+    switch(month.toLowerCase()) {
+        case 'mar': return '03';
+        case 'jun': return '06';
+        case 'sep': return '09';
+        case 'dec': return '12';
+    }
+}
+
+const getQuarter = (data) => {
+    const qSplit = data.split(' ');
+    const year = qSplit[1];
+    const month = getMonth(qSplit[0]);
+    const quarter = `${year}-${month}`;
+    return quarter;
+}
+
+const processConsolidatedData = (data) => {
+    console.log(data);
+    const processedData = {
+        quarter: [], revenue: [], profit: []
+    }
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(data, "text/html");
+    // var body = doc.querySelector('body');
+    const tableRows = doc.querySelectorAll('body #quarters table tr');
+    const quarterTds = tableRows[0].querySelectorAll('th');
+    const revenueTds = tableRows[1].querySelectorAll('td');
+    const profitTds = tableRows[10].querySelectorAll('td');
+    quarterTds.forEach((item, index) => {
+        if (!index) return;
+        const quarter = getQuarter((quarterTds[index].textContent||'').trim());
+        // processedData.quarter.push((quarterTds[index].textContent||'').trim());
+        processedData.quarter.push(quarter);
+        processedData.revenue.push((revenueTds[index].textContent||'').replace(/,/g, '').trim());
+        processedData.profit.push((profitTds[index].textContent||'').replace(/,/g, '').trim());
+    });
+    return processedData;
+}
+
 export const getConsolidatedData = ({url}, callback) => {
     return (dispatch) => {
         dispatch({ type: 'SHOW_LOADER' });
-        callback({consolidatedData: {test: 'testData'}});
+        // callback({consolidatedData: {test: 'testData'}});
         // axios.get(`http://localhost:3300/historicalData?companyId=${companyId}&duration=${duration}`).then((res) => {
-        //     console.log(res.data);
-        //     dispatch({ type: 'HIDE_LOADER' });
-        //     callback(res.data);
-        // })
+        axios.get(`http://localhost:3300/consolidatedData?url=${url}`).then((res) => {
+            console.log(res.data);
+            dispatch({ type: 'HIDE_LOADER' });
+            const processedData = processConsolidatedData(res.data);
+            callback(processedData);
+        })
     }
 }
 
