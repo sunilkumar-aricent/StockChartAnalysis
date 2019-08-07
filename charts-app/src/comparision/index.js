@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown'
-import ChartRender from '../components/chartRender';
+import ComparisionChart from '../components/ComparisionChart';
 import { getComparisionListData } from './action'
 import { getWatchlistData } from '../watchlist/actions'
 
@@ -18,14 +18,25 @@ class Comparision extends React.Component {
         const compareList = this.props.common.compareList;
         this.props.getComparisionListData(compareList, (compareListData) => {
             const compareStocksData = [];
-            compareListData.forEach((element, i) => {
-                const data = element.data.prices;
+            // compareListData.forEach((element, i) => {
+            //     const data = element.data.prices;
+            //     const processedData = []
+            //     for (let index = 0; index < data.length; index++) {
+            //         const date = data[index][0];
+            //         const price = data[index][1];
+            //         const volume = data[index][3];
+            //         processedData.push({ date, price, volume });
+            //     }
+            //     compareStocksData.push(processedData)
+            // });
+            compareListData.forEach((data, i) => {
+                // const data = element.data.prices;
                 const processedData = []
-                for (let index = 0; index < data.length; index++) {
-                    const date = data[index][0];
-                    const price = data[index][1];
-                    const volume = data[index][3];
-                    processedData.push({ date, price, volume });
+                for (let index = 0; index < data.quarter.length; index++) {
+                    const date = data.quarter[index];
+                    const revenue = Number(data.revenue[index]);
+                    const profit = Number(data.profit[index]);
+                    processedData.push({ date, revenue, profit });
                 }
                 compareStocksData.push(processedData)
             });
@@ -37,7 +48,7 @@ class Comparision extends React.Component {
         if (!this.props.common.compareList || !this.props.common.compareList.length) {
             return null;
         }
-        return (<ChartRender chartType={this.state.chartType} processedData={this.state.compareStocksData} compareList={this.props.common.compareList}></ChartRender>);
+        return (<ComparisionChart chartType={this.state.chartType} processedData={this.state.compareStocksData} compareList={this.props.common.compareList}></ComparisionChart>);
     }
     renderChartType = () => {
         return (

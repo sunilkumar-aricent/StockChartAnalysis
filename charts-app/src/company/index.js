@@ -27,7 +27,7 @@ class Company extends Component {
         {id: 1800, label: 'Max'}
     ];
     
-    chartTypes = ['line', 'spline', 'bar', 'combined'];
+    // chartTypes = ['line', 'spline', 'bar', 'combined'];
 
     componentDidMount() {
         const duration = this.state.duration;
@@ -87,7 +87,7 @@ class Company extends Component {
     }
 
     renderDuration = () => {
-        return (<div class="btn-group pull-left ml-5" role="group" aria-label="Basic example">
+        return (<div class="btn-group pull-left" role="group" aria-label="Basic example">
             {this.durationOptions.map(item => {
                 const customClass = this.state.duration === item.id ? 'active' : ''; 
                 return (
@@ -97,31 +97,31 @@ class Company extends Component {
         </div>);
     }
 
-    renderChartType = () => {
-        return (
-            <DropdownButton id="dropdown-item-button" title="Chart-Type" variant='primary' size='md'>
-                {this.chartTypes.map(chartType => (
-                    <Dropdown.Item
-                        as="button"
-                        onClick={() => this.setState({ chartType })}
-                    >
-                        {`${chartType.toUpperCase()}-Chart`}
-                    </Dropdown.Item>))
-                }
-            </DropdownButton>
-        );
-    }
+    // renderChartType = () => {
+    //     return (
+    //         <DropdownButton id="dropdown-item-button" title="Chart-Type" variant='primary' size='md'>
+    //             {this.chartTypes.map(chartType => (
+    //                 <Dropdown.Item
+    //                     as="button"
+    //                     onClick={() => this.setState({ chartType })}
+    //                 >
+    //                     {`${chartType.toUpperCase()}-Chart`}
+    //                 </Dropdown.Item>))
+    //             }
+    //         </DropdownButton>
+    //     );
+    // }
 
     render = () => {
         return (
             <div id="company">
-                <div className="row mb-5 mt-5">
+                <div className="row ml-4 mr-4 mt-5 mb-5">
                     <div className="col-12 col-sm-8 company-actions">
                         {/* <h3>{!this.state.selectedCompany ? 'Please select a company to continue' : `${this.state.selectedCompany.name}`}</h3> */}
                         {this.renderDuration()}
-                        <div class="pull-left ml-2">
+                        {/* <div class="pull-left ml-2">
                             {this.renderChartType()}
-                        </div>
+                        </div> */}
                         {this.state.selectedCompany && <button className="btn btn-primary pull-left ml-2" onClick={this.addToWatchlist}>Add to watchlist</button>}
                     </div>
                     <div className="col-12 col-sm-4">
