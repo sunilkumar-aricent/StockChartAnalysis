@@ -1,7 +1,7 @@
 import React, { Component} from 'react';
 import { connect } from 'react-redux';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import Dropdown from 'react-bootstrap/Dropdown'
+// import DropdownButton from 'react-bootstrap/DropdownButton';
+// import Dropdown from 'react-bootstrap/Dropdown'
 import '../common/styles/company.css';
 import Typeahead from '../common/components/typeahead';
 import { getHistoricalData, searchCompany, getConsolidatedData } from './action';
@@ -22,7 +22,7 @@ class Company extends Component {
         {id: 30, label: '1m'},
         {id: 90, label: '3m'},
         {id: 180, label: '6m'},
-        {id: 365, label: '1Yr'},
+        {id: 400, label: '1Yr'},
         {id: 1080, label: '3Yr'},
         {id: 1800, label: 'Max'}
     ];

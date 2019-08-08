@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { getWatchlistData, setCompareList, setCheckboxSelectionList } from './actions';
 import Form from 'react-bootstrap/Form';
 import { Link } from 'react-router-dom';
+import ChartRender from '../components/BasicChart'
 import '../common/styles/watchlist.css';
 
 
@@ -29,6 +30,7 @@ class Watchlist extends React.Component {
         this.state = {
             watchlist: JSON.parse(localStorage.getItem('watchlist')) || [],
             watchlistData: [],
+            historicalData: [],
             checkboxSelectionList: this.getCheckboxSelectionList()
         }
     }
@@ -49,14 +51,21 @@ class Watchlist extends React.Component {
     componentDidMount() {
         // make api call to get data for each item in watchlist
         this.props.getWatchlistData(this.state.watchlist, (watchlist) => {
-            console.log(watchlist);
             const watchlistData = [];
+            const historicalData = [];
             watchlist.forEach((element, index) => {
                 const price = element.data.prices[0][1];
                 const volume = element.data.prices[0][3];
                 watchlistData.push({ price, volume });
+                const hPrice = [], hVolume = [];
+                element.data.prices.forEach((item, index) => {
+                    if (index>=10) {return false};
+                    hPrice.push(Number(item[1]));
+                    hVolume.push(Number(item[3]));
+                });
+                historicalData.push({ price: hPrice, volume: hVolume })
             });
-            this.setState({ watchlistData });
+            this.setState({ watchlistData, historicalData });
         });
     }
 
@@ -73,6 +82,18 @@ class Watchlist extends React.Component {
         watchlistData.splice(index, 1);
         updateLocalStorage('watchlist', watchlist);
         this.setState({ watchlist, watchlistData })
+    }
+
+    renderChart = (index) => {
+        // const priceData = this.state.historicalData;
+        // const consolidatedData = this.state.consolidatedData;
+        // if (priceData.length === 0) {
+        //     return null;
+        // }
+        // const chartData = historicalData;;
+        return (
+            <ChartRender processedData = {this.state.historicalData[index]}/>
+        );
     }
 
     renderWatchlist() {
@@ -92,6 +113,7 @@ class Watchlist extends React.Component {
                     <td>{price}</td>
                     <td>{volume}</td>
                     <td><RemoveStockBtn className="fa fa-times" onClick={() => this.removeStock(index)}></RemoveStockBtn></td>
+                    <td>{this.renderChart(index)}</td>
                     <td>
                         <Form.Check type='checkbox' checked={checked} onChange={(event) => this.handleCheckboxChange(index, event)} />
                     </td>
@@ -105,6 +127,7 @@ class Watchlist extends React.Component {
                     <th>Price</th>
                     <th>Volume</th>
                     <th>Remove</th>
+                    <th>Chart (Last 5 sessions)</th>
                     <th>Select to compare</th>
                 </tr>
                 {html}

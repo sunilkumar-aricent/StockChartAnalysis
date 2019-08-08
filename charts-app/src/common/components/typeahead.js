@@ -5,9 +5,9 @@ const AsyncTypeahead = asyncContainer(Typeahead);
 
 class TypeaheadComponent extends React.Component {
   state = {
-    allowNew: false,
+    // allowNew: false,
     isLoading: false,
-    multiple: false,
+    // multiple: false,
     options: [],
   };
 
