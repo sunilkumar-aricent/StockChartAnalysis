@@ -4,11 +4,12 @@ import HighchartsReact from 'highcharts-react-official';
 
 class ChartRender extends Component {
 
+  itemWithMaxDataPoints = [];
+
   categoriesGenerator() {
-    let category = []
-    this.props.processedData.forEach(company => {
-      category = company.map(item=>item.date)
-    });
+    // find company with maximum data points
+    this.itemWithMaxDataPoints = (this.props.processedData || []).reduce((prev, current) => (prev.length > current.length) ? prev : current);
+    const category = this.itemWithMaxDataPoints.map(item=>item.date);
     return category;
   }
 
@@ -19,16 +20,20 @@ class ChartRender extends Component {
       case 'line':
       case 'spline':
       case 'bar': {
-        // const priceData = stockData.map((item) => item.price);
-        // seriesData.push({ type, name: `${name}_price`, data: priceData });
-        
-        // const volumeData = stockData.map((item) => item.volume);
-        // seriesData.push({ type: 'column', name: `${name}_volume`, data: volumeData, yAxis: 1 });
-        
-        const revenueData = stockData.map((item) => item.revenue);
+        let revenueData = stockData.map((item) => item.revenue);
+        let profitData = stockData.map((item) => item.profit);
+        debugger;
+        if (revenueData.length < this.itemWithMaxDataPoints.length) {
+          revenueData = revenueData.reverse();
+          profitData = profitData.reverse();
+          for (let i = 0; i < (this.itemWithMaxDataPoints.length - stockData.length); i++) {
+            revenueData.push(null);
+            profitData.push(null);
+          }
+          revenueData = revenueData.reverse();
+          profitData = profitData.reverse();
+        }
         seriesData.push({ type: 'column', name: `${name}_revenue`, data: revenueData, connectNulls: true  });
-
-        const profitData = stockData.map((item) => item.profit);
         seriesData.push({ type: 'spline', name: `${name}_profit`, data: profitData, yAxis: 1, connectNulls: true });
         break;
       }
@@ -49,6 +54,7 @@ class ChartRender extends Component {
       const name = this.props.compareList[index].name;
       seriesData.push(this.getSeriesData(element, name));
     });
+    debugger;
     const finalData = [];
     seriesData.forEach(i => {
       i.forEach(j => {
@@ -59,6 +65,9 @@ class ChartRender extends Component {
   }
 
   render() {
+    if(!this.props.processedData || !this.props.processedData.length) {
+      return null;
+    }
     const title = this.props.compareList.length === 1 ? `Chart for ${this.props.compareList[0].name}` : `Comparision chart`;
     const options = {
       // chart: {

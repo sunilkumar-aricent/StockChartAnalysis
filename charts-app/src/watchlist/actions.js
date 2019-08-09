@@ -22,7 +22,7 @@ export const getWatchlistData = (watchlist, callback) => {
         const promises = [];
         watchlist.forEach(element => {
             const companyId = element.id;
-            const duration = 30;
+            const duration = 10;
             const test = axios.get(`http://localhost:3300/historicalData?companyId=${companyId}&duration=${duration}`);
             // const test = axios.get(`${host}${historicalDataApi}&symbol=NSE:${element}`);
             promises.push(test);
@@ -31,7 +31,6 @@ export const getWatchlistData = (watchlist, callback) => {
         Promise.all(promises).then(([...res]) => {
             console.log(res);
             dispatch({ type: 'HIDE_LOADER' });
-
             callback(res);
         });
     }
