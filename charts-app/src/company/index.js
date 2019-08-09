@@ -5,8 +5,10 @@ import { connect } from 'react-redux';
 import '../common/styles/company.css';
 import Typeahead from '../common/components/typeahead';
 import { getHistoricalData, searchCompany, getConsolidatedData } from './action';
+import { setError } from '../common/actions/commonActions';
 import ChartRender from '../components/chartRender';
 import { processHistoricalData } from '../common/util';
+// import ErrorBar from '../common/components/ErrorBar';
 
 class Company extends Component {
     state = {
@@ -68,16 +70,17 @@ class Company extends Component {
     }
 
     addToWatchlist = () => {
-        // const selectedCompany = { id: this.state.selectedCompany.id, name:  this.state.selectedCompany.name };
         const selectedCompany = this.state.selectedCompany;
         const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+        let errorMessage = null;
         if (watchlist.filter(item => item.id === selectedCompany.id).length === 0) {
             watchlist.push(selectedCompany);
             localStorage.setItem('watchlist', JSON.stringify(watchlist));
-            alert('stock added successfully');
+            errorMessage = 'Stock added successfully';
         } else {
-            alert('stock already exist in the watchlist');
+            errorMessage = 'Stock already exist in the watchlist';
         }
+        this.props.setError(errorMessage);
     }
 
     changeDuration = (duration) => {
@@ -87,7 +90,7 @@ class Company extends Component {
     }
 
     renderDuration = () => {
-        return (<div class="btn-group pull-left" role="group" aria-label="Basic example">
+        return (<div class="btn-group pull-left mr-2 mb-2" role="group" aria-label="Basic example">
             {this.durationOptions.map(item => {
                 const customClass = this.state.duration === item.id ? 'active' : ''; 
                 return (
@@ -97,34 +100,15 @@ class Company extends Component {
         </div>);
     }
 
-    // renderChartType = () => {
-    //     return (
-    //         <DropdownButton id="dropdown-item-button" title="Chart-Type" variant='primary' size='md'>
-    //             {this.chartTypes.map(chartType => (
-    //                 <Dropdown.Item
-    //                     as="button"
-    //                     onClick={() => this.setState({ chartType })}
-    //                 >
-    //                     {`${chartType.toUpperCase()}-Chart`}
-    //                 </Dropdown.Item>))
-    //             }
-    //         </DropdownButton>
-    //     );
-    // }
-
     render = () => {
         return (
             <div id="company">
                 <div className="row ml-4 mr-4 mt-5 mb-5">
-                    <div className="col-12 col-sm-8 company-actions">
-                        {/* <h3>{!this.state.selectedCompany ? 'Please select a company to continue' : `${this.state.selectedCompany.name}`}</h3> */}
+                    <div className="col-md-12 col-lg-8 company-actions">
                         {this.renderDuration()}
-                        {/* <div class="pull-left ml-2">
-                            {this.renderChartType()}
-                        </div> */}
-                        {this.state.selectedCompany && <button className="btn btn-primary pull-left ml-2" onClick={this.addToWatchlist}>Add to watchlist</button>}
+                        {this.state.selectedCompany && <button className="btn btn-primary pull-left mb-2" onClick={this.addToWatchlist}>Add to watchlist</button>}
                     </div>
-                    <div className="col-12 col-sm-4">
+                    <div className="col-md-12 col-lg-4">
                         <Typeahead searchCompany={this.props.searchCompany} selectCompany={this.selectCompany} />
                     </div>
                 </div>
@@ -144,7 +128,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
     getHistoricalData,
     getConsolidatedData,
-    searchCompany
+    searchCompany,
+    setError
 };
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(Company);

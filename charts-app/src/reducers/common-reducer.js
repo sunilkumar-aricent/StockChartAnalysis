@@ -1,4 +1,10 @@
-const initialState = { showLoader: false, compareList : [] }
+const initialState = {
+    showLoader: false,
+    compareList : [],
+    error: {
+        message: 'this is an error message'
+    }
+}
 
 const commonReducer = (state = initialState, action) => {
     switch(action.type) {
@@ -12,11 +18,24 @@ const commonReducer = (state = initialState, action) => {
             newState.showLoader = false;
             return newState;
         }
-        case 'COMPARE_LIST':
+        case 'COMPARE_LIST': {
             return {
                 ...state,
                 compareList : action.data
             }
+        }
+        case 'RESET_ERROR': {
+            return {
+                ...state,
+                error: null
+            }
+        }
+        case 'SET_ERROR': {
+            return {
+                ...state,
+                error: action.data
+            }
+        }
         default: return state;
     }
 }

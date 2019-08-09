@@ -8,6 +8,9 @@ import Comparision from './comparision';
 import Loader from './common/components/loader';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
+import ErrorBar from './common/components/ErrorBar';
+import './common/styles/common.css';
+import './common/styles/common.scss';
 
 import { BrowserRouter, Route } from 'react-router-dom';
 
@@ -18,6 +21,7 @@ function App({ common }) {
       {common.showLoader && <Loader />} 
       <BrowserRouter>
         <Navigation />
+        <ErrorBar />
         <div class="container">
           <Route exact path="/" component={Company} />
           <Route path="/company" component={Company} />

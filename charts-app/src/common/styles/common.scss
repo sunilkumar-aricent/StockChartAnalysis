@@ -1,0 +1,33 @@
+.error-bar {
+    padding: 10px 17px;
+    &.error {
+        border: 1px solid #e75178;
+        background-color: rgba(231, 81, 120, 0.05);
+        color: #e75178;
+        .custom-button {
+            color: #e75178;
+        }
+    }
+    &.warning {
+        border: 1px solid yellow;
+        background-color: rgba(231, 81, 120, 0.05);
+        color: yellow;
+        .custom-button {
+            color: yellow;
+        }
+    }
+    &.success {
+        border: 1px solid green;
+        background-color: rgba(231, 81, 120, 0.05);
+        color: green;
+        .custom-button {
+            color: green;
+        }
+    }
+      
+}
+  
+.custom-button {
+  border: 0;
+  background: transparent;
+}

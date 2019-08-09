@@ -1,7 +1,6 @@
 import React from 'react';
 // import loaderImg from '../images/loader.gif';
 import loaderImg from '../images/logo.svg';
-import '../styles/common.css';
 
 export default function() {
     return (
