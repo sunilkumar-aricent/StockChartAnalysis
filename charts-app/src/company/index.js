@@ -80,7 +80,8 @@ class Company extends Component {
         } else {
             errorMessage = 'Stock already exist in the watchlist';
         }
-        this.props.setError(errorMessage);
+        const error = { message: errorMessage };
+        this.props.setError(error);
     }
 
     changeDuration = (duration) => {

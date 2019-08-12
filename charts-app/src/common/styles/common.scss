@@ -9,11 +9,11 @@
         }
     }
     &.warning {
-        border: 1px solid yellow;
+        border: 1px solid #ffc107;
         background-color: rgba(231, 81, 120, 0.05);
-        color: yellow;
+        color: #ffc107;
         .custom-button {
-            color: yellow;
+            color: #ffc107;
         }
     }
     &.success {
@@ -23,6 +23,10 @@
         .custom-button {
             color: green;
         }
+    }
+    button.close {
+        font-size: 24px;
+        font-weight: bold;
     }
       
 }

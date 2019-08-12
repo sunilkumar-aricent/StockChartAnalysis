@@ -2,7 +2,9 @@ const initialState = {
     showLoader: false,
     compareList : [],
     error: {
-        message: 'this is an error message'
+        message: '<h1>This is h1 error</h1>',
+        isHtml: true,
+        messageType: 'error',
     }
 }
 
