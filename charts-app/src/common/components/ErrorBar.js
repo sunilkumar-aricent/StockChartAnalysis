@@ -8,6 +8,11 @@ import { resetError } from '../actions/commonActions';
 //     isHtml: 'Boolean - flag to represent whether message is text string or html string',
 //     messageType: 'String - error/warning/success'
 // }
+let timer = null;
+const resetTimer = (callback) => {
+    timer && clearTimeout(timer);
+    timer = setTimeout(callback, 5000);
+}
 
 const ErrorBar = (props) => {
     if (!props.error.message) {
@@ -15,6 +20,7 @@ const ErrorBar = (props) => {
     }
     const error = props.error;
     const customClass = `error-bar ${error.messageType || 'error'}`;
+    resetTimer(props.resetError);
     return (
         <div className={customClass}>
             <button className="custom-button pull-right close" onClick={() => props.resetError()}>&times;</button>

@@ -62,14 +62,14 @@ export const getConsolidatedData = ({url}, callback) => {
         dispatch({ type: 'SHOW_LOADER' });
         // callback({consolidatedData: {test: 'testData'}});
         // axios.get(`http://localhost:3300/historicalData?companyId=${companyId}&duration=${duration}`).then((res) => {
-        axios.get(`http://localhost:3300/conslidatedData?url=${url}`).then((res) => {
+        axios.get(`http://localhost:3300/consolidatedData?url=${url}`).then((res) => {
             console.log(res.data);
             dispatch({ type: 'HIDE_LOADER' });
             const processedData = processConsolidatedData(res.data);
             callback(processedData);
         }).catch((error) => {
-            const message = '<h2>he there<h2>';
-            const isHtml = true;
+            const message = error.message;
+            const isHtml = false;
             const messagetype = 'error';
             const errorObject = { message, isHtml, messagetype  };
             dispatch({ type: 'SET_ERROR', data: errorObject });

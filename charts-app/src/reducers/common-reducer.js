@@ -1,11 +1,12 @@
 const initialState = {
     showLoader: false,
     compareList : [],
-    error: {
-        message: '<h1>This is h1 error</h1>',
-        isHtml: true,
-        messageType: 'error',
-    }
+    // error: {
+    //     message: '<h1>This is h1 error</h1>',
+    //     isHtml: true,
+    //     messageType: 'error',
+    // }
+    error: null
 }
 
 const commonReducer = (state = initialState, action) => {
