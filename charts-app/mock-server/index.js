@@ -10,6 +10,29 @@ const port = process.env.port || 3300;
 // const timeSeriesDailyApi = '/query?function=TIME_SERIES_DAILY&apikey=LYK5FRW7A27I9REB';
 app.use(cors())
 
+app.use(express.static(path.resolve(__dirname, 'build')));
+// app.use(express.static('build'));
+
+// let counter = 0;
+// app.use('/', (req, res, next) => {
+//     console.log(++counter, 'requests', req.url);
+//     // const file = fs.readFileSync(path.resolve(__dirname, req.url));
+//     try {
+//         fs.readFileSync(path.resolve(__dirname, 'build', req.url), function(err, data) {
+//             if (err) {
+//                 console.log('error.....1');
+//                 next();
+//             } else {
+//                 console.log('file found...');
+//                 res.send(data);
+//             }
+//         });
+//     } catch(e) {
+//         console.log('error.....2', JSON.stringify(e));
+//         next();
+//     }
+// })
+
 app.get('/', (req, res) => {
     res.send('dayanand gupta')
 })
@@ -17,7 +40,6 @@ app.get('/', (req, res) => {
 app.get('/query', (req, res) => {
     // read mock json and send in response
     const symbol = req.query.symbol.split(':')[1].toLowerCase();
-    console.log(req.query, req.query.symbol, symbol);
     const file = path.resolve(__dirname, 'mock-json', `${symbol}.json`)
     fs.readFile(file, (err, data) => {
         if (err) {
@@ -30,10 +52,8 @@ app.get('/query', (req, res) => {
 
 app.get('/consolidatedData', (req, res) => {
     const url = req.query.url;
-    console.log(url);
     https.get(`https://www.screener.in/${url}`, (resp) => {
         res.type('html');
-        console.log('res received');
         let data = '';
 
         resp.on('data', (chunk) => {
